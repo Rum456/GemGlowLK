@@ -46,4 +46,6 @@ Prices in the dataset are approximate values in LKR per carat, for guidance only
 
 ## Author
 
-Zoya – University of Vavuniya, Faculty of Applied Science
+Rumana Zeerin
+Reg No:- 2022ICT113 
+University of Vavuniya, Faculty of Applied Science
