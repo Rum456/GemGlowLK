@@ -27,10 +27,10 @@ function Tabs() {
         tabBarIcon: () => <Text style={{ fontSize: 18 }}>{icons[route.name]}</Text>,
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'GemGlow LK', tabBarLabel: 'Home' }} />
-      <Tab.Screen name="Gems" component={GemListScreen} options={{ title: 'Gem Guide', tabBarLabel: 'Gems' }} />
-      <Tab.Screen name="Collection" component={CollectionScreen} options={{ title: 'My Collection', tabBarLabel: 'Collection' }} />
-      <Tab.Screen name="Tips" component={TipsScreen} options={{ title: 'Care & Buying Tips', tabBarLabel: 'Tips' }} />
+     <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'GemGlow LK', tabBarLabel: 'Home' }} />
+     <Tab.Screen name="Gems" component={GemListScreen} options={{ title: 'Gem Guide', tabBarLabel: 'Gems' }} />
+     <Tab.Screen name="Collection" component={CollectionScreen} options={{ title: 'My Collection', tabBarLabel: 'Collection' }} />
+     <Tab.Screen name="Tips" component={TipsScreen} options={{ title: 'Care & Buying Tips', tabBarLabel: 'Tips' }} />
     </Tab.Navigator>
   );
 }
