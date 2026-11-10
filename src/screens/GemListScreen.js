@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -10,6 +11,7 @@ import {
 } from 'react-native';
 import gems from '../data/gems.json';
 import GemCard from '../components/GemCard';
+import { getFavourites } from '../storage/favourites';
 import { COLORS } from '../theme';
 
 const colours = ['All', ...Array.from(new Set(gems.map((g) => g.colour))).sort()];
@@ -20,6 +22,15 @@ export default function GemListScreen({ navigation, route }) {
   const [colour, setColour] = useState('All');
   const [category, setCategory] = useState(null);
   const [sort, setSort] = useState('A–Z');
+  const [favOnly, setFavOnly] = useState(false);
+  const [favIds, setFavIds] = useState([]);
+
+  // Reload favourites every time this tab is opened
+  useFocusEffect(
+    useCallback(() => {
+      getFavourites().then(setFavIds);
+    }, [])
+  );
 
   // Category chip pressed on the Home screen
   useEffect(() => {
@@ -36,7 +47,8 @@ export default function GemListScreen({ navigation, route }) {
         g.category.toLowerCase().includes(q);
       const matchC = colour === 'All' || g.colour === colour;
       const matchCat = !category || g.category === category;
-      return matchQ && matchC && matchCat;
+      const matchFav = !favOnly || favIds.includes(g.id);
+      return matchQ && matchC && matchCat && matchFav;
     });
     list = [...list];
     if (sort === 'A–Z') list.sort((a, b) => a.name.localeCompare(b.name));
@@ -44,7 +56,7 @@ export default function GemListScreen({ navigation, route }) {
     if (sort === 'Price ↓') list.sort((a, b) => b.priceMax - a.priceMax);
     if (sort === 'Hardness ↓') list.sort((a, b) => b.hardness - a.hardness);
     return list;
-  }, [query, colour, category, sort]);
+  }, [query, colour, category, sort, favOnly, favIds]);
 
   return (
     <View style={styles.container}>
@@ -69,6 +81,12 @@ export default function GemListScreen({ navigation, route }) {
       </ScrollView>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
+        <TouchableOpacity
+          style={[styles.chip, favOnly && styles.chipActive]}
+          onPress={() => setFavOnly(!favOnly)}
+        >
+          <Text style={[styles.chipText, favOnly && styles.chipTextActive]}>★ Favourites</Text>
+        </TouchableOpacity>
         {SORTS.map((s) => (
           <TouchableOpacity
             key={s}

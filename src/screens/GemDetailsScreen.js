@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { addToCollection } from '../storage/collection';
+import { getFavourites, toggleFavourite } from '../storage/favourites';
 import { COLORS, COLOUR_DOTS, formatLKR } from '../theme';
 
 function Row({ label, value }) {
@@ -24,6 +25,17 @@ export default function GemDetailsScreen({ route, navigation }) {
   const { gem } = route.params;
   const [carat, setCarat] = useState('');
   const [price, setPrice] = useState('');
+  const [isFav, setIsFav] = useState(false);
+
+  // Load whether this gem is already a favourite
+  useEffect(() => {
+    getFavourites().then((ids) => setIsFav(ids.includes(gem.id)));
+  }, [gem.id]);
+
+  const handleFav = async () => {
+    const ids = await toggleFavourite(gem.id);
+    setIsFav(ids.includes(gem.id));
+  };
 
   const handleAdd = async () => {
     if (!carat || isNaN(Number(carat)) || Number(carat) <= 0) {
@@ -50,6 +62,14 @@ export default function GemDetailsScreen({ route, navigation }) {
         <View style={[styles.dot, { backgroundColor: COLOUR_DOTS[gem.colour] || '#999' }]} />
         <Text style={styles.title}>{gem.name}</Text>
         <Text style={styles.badge}>{gem.category}</Text>
+        <TouchableOpacity
+          style={[styles.favBtn, isFav && styles.favBtnActive]}
+          onPress={handleFav}
+        >
+          <Text style={[styles.favText, isFav && styles.favTextActive]}>
+            {isFav ? '♥ Favourite' : '♡ Add to favourites'}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.card}>
@@ -121,6 +141,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     fontWeight: '600',
   },
+  favBtn: {
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: COLORS.danger,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+  },
+  favBtnActive: { backgroundColor: COLORS.danger },
+  favText: { color: COLORS.danger, fontWeight: '700' },
+  favTextActive: { color: '#fff' },
   card: { backgroundColor: '#fff', borderRadius: 12, padding: 14, marginBottom: 10 },
   desc: { fontSize: 15, color: COLORS.text, lineHeight: 22 },
   row: {
