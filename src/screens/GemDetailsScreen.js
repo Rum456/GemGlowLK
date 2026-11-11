@@ -26,6 +26,12 @@ export default function GemDetailsScreen({ route, navigation }) {
   const [carat, setCarat] = useState('');
   const [price, setPrice] = useState('');
   const [isFav, setIsFav] = useState(false);
+  const [estCarat, setEstCarat] = useState('');
+
+  // Value estimator: carat weight x price per carat range
+  const estValid = estCarat !== '' && !isNaN(Number(estCarat)) && Number(estCarat) > 0;
+  const estMin = estValid ? Math.round(Number(estCarat) * gem.priceMin) : 0;
+  const estMax = estValid ? Math.round(Number(estCarat) * gem.priceMax) : 0;
 
   // Load whether this gem is already a favourite
   useEffect(() => {
@@ -94,6 +100,27 @@ export default function GemDetailsScreen({ route, navigation }) {
       <Text style={styles.note}>
         Prices are rough estimates for guidance only. Real prices depend on quality, cut and treatment.
       </Text>
+
+      <Text style={styles.section}>💰 Value Estimator</Text>
+      <View style={styles.card}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter carat weight (e.g. 2.5)"
+          keyboardType="decimal-pad"
+          value={estCarat}
+          onChangeText={setEstCarat}
+        />
+        {estValid ? (
+          <View>
+            <Text style={styles.estLabel}>Estimated value for {estCarat} ct</Text>
+            <Text style={styles.estResult}>
+              {formatLKR(estMin)} – {formatLKR(estMax)}
+            </Text>
+          </View>
+        ) : (
+          <Text style={styles.estLabel}>Type a carat weight to see the estimated value.</Text>
+        )}
+      </View>
 
       <Text style={styles.section}>➕ Add to My Collection</Text>
       <View style={styles.card}>
@@ -164,6 +191,8 @@ const styles = StyleSheet.create({
   label: { color: COLORS.muted },
   value: { fontWeight: '700', color: COLORS.text, flexShrink: 1, textAlign: 'right', marginLeft: 12 },
   section: { fontSize: 17, fontWeight: '700', marginTop: 10, marginBottom: 8 },
+  estLabel: { color: COLORS.muted, fontSize: 13 },
+  estResult: { color: COLORS.primary, fontSize: 18, fontWeight: '800', marginTop: 4 },
   note: { fontSize: 12, color: COLORS.muted, fontStyle: 'italic', marginBottom: 6 },
   input: {
     borderWidth: 1,
