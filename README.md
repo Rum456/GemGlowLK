@@ -6,12 +6,13 @@ GemGlow LK is a mobile app (React Native + Expo) about gemstones found in Sri La
 
 ## Features
 
-- Local dataset of 30 Sri Lankan gemstones (`src/data/gems.json`)
+- Local dataset of 35 Sri Lankan gemstones (`src/data/gems.json`)
 - Home screen with a gem of the day, browse by type, and quick actions
 - Gem list with search, colour filter, type filter and sorting
 - Gem details screen with hardness, district, approximate price range and care tip
 - Compare two gems side by side
 - My Collection: add gems with carat weight and price paid, delete them, and see totals (saved with AsyncStorage)
+- Favourites: mark gems with a heart and filter the list to show only your favourites (saved with AsyncStorage)
 - Care and buying tips, including how to spot fake gems
 - No internet, API or online database needed
 
