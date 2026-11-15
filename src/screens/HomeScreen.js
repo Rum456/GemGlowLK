@@ -1,7 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import gems from '../data/gems.json';
 import GemCard from '../components/GemCard';
+import { getRecent } from '../storage/recent';
 import { COLORS } from '../theme';
 
 export default function HomeScreen({ navigation }) {
@@ -21,6 +23,16 @@ export default function HomeScreen({ navigation }) {
 
   const districts = useMemo(() => new Set(gems.map((g) => g.district)).size, []);
 
+  // Recently viewed gems (ids saved locally), reloaded every time Home is opened
+  const [recent, setRecent] = useState([]);
+  useFocusEffect(
+    useCallback(() => {
+      getRecent().then((ids) =>
+        setRecent(ids.map((id) => gems.find((g) => g.id === id)).filter(Boolean))
+      );
+    }, [])
+  );
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
       <View style={styles.hero}>
@@ -33,6 +45,19 @@ export default function HomeScreen({ navigation }) {
 
       <Text style={styles.section}>Gem of the Day</Text>
       <GemCard gem={featured} onPress={() => navigation.navigate('GemDetails', { gem: featured })} />
+
+      {recent.length > 0 && (
+        <>
+          <Text style={styles.section}>Recently Viewed</Text>
+          {recent.map((g) => (
+            <GemCard
+              key={g.id}
+              gem={g}
+              onPress={() => navigation.navigate('GemDetails', { gem: g })}
+            />
+          ))}
+        </>
+      )}
 
       <Text style={styles.section}>Browse by Type</Text>
       <View style={styles.chips}>

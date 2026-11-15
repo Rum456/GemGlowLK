@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { addToCollection } from '../storage/collection';
 import { getFavourites, toggleFavourite } from '../storage/favourites';
+import { addRecent } from '../storage/recent';
 import { COLORS, COLOUR_DOTS, formatLKR } from '../theme';
 
 function Row({ label, value }) {
@@ -33,9 +34,10 @@ export default function GemDetailsScreen({ route, navigation }) {
   const estMin = estValid ? Math.round(Number(estCarat) * gem.priceMin) : 0;
   const estMax = estValid ? Math.round(Number(estCarat) * gem.priceMax) : 0;
 
-  // Load whether this gem is already a favourite
+  // Load whether this gem is already a favourite, and remember that it was viewed
   useEffect(() => {
     getFavourites().then((ids) => setIsFav(ids.includes(gem.id)));
+    addRecent(gem.id);
   }, [gem.id]);
 
   const handleFav = async () => {
