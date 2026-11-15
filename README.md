@@ -14,6 +14,7 @@ GemGlow LK is a mobile app (React Native + Expo) about gemstones found in Sri La
 - My Collection: add gems with carat weight and price paid, delete them, and see totals (saved with AsyncStorage)
 - Favourites: mark gems with a heart and filter the list to show only your favourites (saved with AsyncStorage)
 - Value estimator: enter a carat weight to see the estimated price range
+- Recently viewed: the Home screen shows the last 5 gems you opened
 - Care and buying tips, including how to spot fake gems
 - No internet, API or online database needed
 
